@@ -35,6 +35,10 @@ public class Inventory {
         inventory_items.replace(item.getItemName(), newItem);
     }
 
+    public Map<String, Item> getInventory_items() {
+        return inventory_items;
+    }
+
     private void Add(Item item) {
         inventory_items.put(item.getItemName(), item);
     }

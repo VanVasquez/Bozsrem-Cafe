@@ -17,6 +17,10 @@ public class Order{
         totalCost += item.getItemPrice();
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
     public void Remove_Item(Item item) {
         items.remove(item);
     }

@@ -1,82 +1,165 @@
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //Examples
+        Application application = new Application();
 
-        /*
-        //view Inventory, not yet connected to order, but can be updated
-        Inventory inventory = new Inventory();
-        //View method will print out all items
-        inventory.View();
-        //Update function will change quantity of items,
-        inventory.Update_Order(new Item("Adobo", 2));
-        //After inputting qty of 2, it will decrease the original value of adobo to 8
-        inventory.View();
-         */
+        application.Start();
+
+        while(application.is_running) {
+            int choice = application.Main_Menu();
+            switch (choice) {
+                case 1 -> {
+                    application.Get_Order();
+                }
+                case 2 -> System.out.println("Inventory");
+                case 3 -> {
+                    application.viewSales();
+                }
+                case 4 -> application.Close();
+                default -> throw new IllegalStateException("Unexpected Input: " + choice);
+            }
+        }
 
 
-        //Ordering
-        /*
-        Order order = new Order("Pedro");
-        //There are 2 methods for ordering
-        //1
-        Item item = new Item("Hot Coffee", 2);
-        order.Add_Item(item);
-        order.Print();
-        //2
-        order.Add_Item(new Item("Iced Coffee", 1));
-        order.Print();
-         */
-
-        Order order = new Order("Manny");
-        Item item1 = new Item(Item_Names(1), 2);
-        Item item2 = new Item(Item_Names(2), 1);
-        Item item3 = new Item(Item_Names(3), 1);
-        Item item4 = new Item(Item_Names(4), 1);
-        Item item5 = new Item(Item_Names(5), 1);
-        Item item6 = new Item(Item_Names(6), 1);
-        Item item7 = new Item(Item_Names(7), 1);
-        Item item8 = new Item(Item_Names(8), 1);
-        Item item9 = new Item(Item_Names(9), 1);
-        Item item10 = new Item(Item_Names(10), 1);
-        Item item11 = new Item(Item_Names(11), 1);
-        Item item12 = new Item(Item_Names(12), 1);
-        Item item13 = new Item(Item_Names(13), 1);
-        Item item14 = new Item(Item_Names(14), 1);
-        order.Add_Item(item1);
-        order.Add_Item(item2);
-        order.Add_Item(item3);
-        order.Add_Item(item4);
-        order.Add_Item(item5);
-        order.Add_Item(item6);
-        order.Add_Item(item7);
-        order.Add_Item(item8);
-        order.Add_Item(item9);
-        order.Add_Item(item10);
-        order.Add_Item(item11);
-        order.Add_Item(item12);
-        order.Add_Item(item13);
-        order.Add_Item(item14);
-        order.Print();
     }
 
-    private static String Item_Names(int num) {
-        return switch (num) {
-            case 1 -> "Honey Glazed Chicken";
-            case 2 -> "Adobo";
-            case 3 -> "Sweet and Spicy";
-            case 4 -> "Burger";
-            case 5 -> "Hotdog with Bun";
-            case 6 -> "Footlong";
-            case 7 -> "Fries";
-            case 8 -> "Nachos";
-            case 9 -> "Bottled Water";
-            case 10 -> "Coke";
-            case 11 -> "Coke Zero";
-            case 12 -> "Royal";
-            case 13 -> "Hot Coffee";
-            case 14 -> "Iced Coffee";
-            default -> throw new IllegalStateException("Unexpected value: " + num);
+}
+
+class Application {
+    private static final Scanner scn = new Scanner(System.in);
+    private Inventory inventory;
+    private Order order;
+    private Sales sales;
+    public boolean is_running = true;
+    public void Start() {
+        inventory = new Inventory();
+        sales = new Sales();
+    }
+
+    public int Main_Menu() {
+        System.out.println("===========================================");
+        System.out.println(" Bozsrem Cafe");
+        System.out.println(" Choose: ");
+        System.out.println("    1. Create Order");
+        System.out.println("    2. Check Inventory");
+        System.out.println("    3. Check Reports");
+        System.out.println("    4. Exit");
+        System.out.println("===========================================");
+        System.out.println("Type Here: ");
+        return scn.nextInt();
+    }
+    public void View_Menu() {
+        System.out.println("~~~~~~~~~~~~~~Choose Menu~~~~~~~~~~~~~~~~~~");
+        System.out.println("Rice Meals:                           P 100");
+        System.out.println(" R1-      Honey Glazed Chicken             ");
+        System.out.println(" R2-      Adobo ");
+        System.out.println(" R3-      Sweet and Spicy Fillet");
+        System.out.println("Extra meals: ");
+        System.out.println(" B1-      Burger                      P  25");
+        System.out.println(" B2-      Hotdog with Bun             P  25");
+        System.out.println(" B3-      Footlong                    P  40");
+        System.out.println(" B4-      Fries                       P  25");
+        System.out.println(" B5-      Nachos                      P  30");
+        System.out.println("Beverages: ");
+        System.out.println(" W1-      Bottled Water               P  15");
+        System.out.println(" W2-      Coke                        P  40");
+        System.out.println(" W3-      Coke zero ");
+        System.out.println(" W4-      Royal  ");
+        System.out.println("Coffee: ");
+        System.out.println(" C1-      Hot Coffee                  P  20");
+        System.out.println(" C2-      Iced Coffee                 P  30");
+    }
+
+    public void Get_Order() {
+        System.out.println("Enter customer name: ");
+        scn.nextLine();
+        String customerName = scn.nextLine();
+        View_Menu();
+        order = new Order(customerName);
+        System.out.println("Add order: ");
+        createNewOrder();
+        while (!checkQuantity()) {
+            System.out.println("Change order / Cancel order");
+            System.out.println("Type change / cancel");
+            String next = scn.nextLine();
+            if (next.toLowerCase().contains("change")) {
+                createNewOrder();
+            }
+            else return;
+        }
+
+        while (true) {
+            System.out.println("Add more items: ");
+            System.out.println("Type y / n");
+            String add = scn.nextLine();
+            if (add.toLowerCase().contains("n"))
+                break;
+            createNewOrder();
+        }
+        order.Print();
+        sales.Save_Report(order);
+    }
+
+    private void createNewOrder() {
+        while (true) {
+            System.out.println("Enter item id and quantity: (type close to end)");
+            String items = scn.nextLine();
+            if (items.contains("close"))
+                break;
+        String itemName = items.substring(0, 2).toUpperCase();
+        int quantity = Integer.parseInt(items.substring(3));
+
+        order.Add_Item(new Item(Item_Names(itemName), quantity));
+        }
+    }
+    public void Close() {
+        System.out.println("Are you sure you want to exit? ");
+        System.out.println("Type Y / N");
+        System.out.print("Type here: ");
+        scn.nextLine();
+        String choice = scn.nextLine();
+        if (choice.toUpperCase().contains("Y"))
+            System.exit(0);
+    }
+    private String Item_Names(String id) {
+        return switch (id) {
+            case "R1" -> "Honey Glazed Chicken";
+            case "R2" -> "Adobo";
+            case "R3" -> "Sweet and Spicy";
+            case "B1" -> "Burger";
+            case "B2" -> "Hotdog with Bun";
+            case "B3" -> "Footlong";
+            case "B4" -> "Fries";
+            case "B5" -> "Nachos";
+            case "W1" -> "Bottled Water";
+            case "W2" -> "Coke";
+            case "W3" -> "Coke Zero";
+            case "W4" -> "Royal";
+            case "C1" -> "Hot Coffee";
+            case "C2" -> "Iced Coffee";
+            default -> throw new IllegalStateException("Unexpected value: " + id);
         };
     }
 
+    private boolean checkQuantity() {
+        Map<String, Item> inventoryItems = inventory.getInventory_items();
+        List<Item> orderItems = order.getItems();
+
+        for (Item item: orderItems) {
+            Item currentItem = inventoryItems.get(item.getItemName());
+            if (currentItem.getQuantity() < item.getQuantity()) {
+                System.out.println("Not enough " + currentItem.getItemName() + ", please create new order. ");
+                System.out.println(currentItem.getQuantity() + " left");
+                order.Remove_Item(item);
+                return false;
+            }
+        }
+        return true;
+    }
+    public void viewSales() {
+        sales.View_Sales();
+    }
 }
