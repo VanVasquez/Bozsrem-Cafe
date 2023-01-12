@@ -13,7 +13,7 @@ abstract class Controls {
         return switch (id) {
             case "R1" -> "Honey Glazed Chicken";
             case "R2" -> "Adobo";
-            case "R3" -> "Sweet and Spicy";
+            case "R3" -> "Sweet and Spicy Fillet";
             case "B1" -> "Burger";
             case "B2" -> "Hotdog with Bun";
             case "B3" -> "Footlong";
