@@ -36,7 +36,7 @@ public class Item {
     //This method returns the value of items, it has parameters of String itemName to determine their prizes. if the inputted name is undefined, return -1
     private double getPrizes(String itemName) {
         return switch (itemName) {
-            case "Honey Glazed Chicken", "Adobo", "Sweet and Spicy" -> 100.00;
+            case "Honey Glazed Chicken", "Adobo", "Sweet and Spicy Fillet" -> 100.00;
             case "Burger", "Hotdog with Bun", "Fries" -> 25.00;
             case "Footlong", "Coke", "Coke Zero", "Royal" -> 40;
             case "Nachos", "Iced Coffee" -> 30;

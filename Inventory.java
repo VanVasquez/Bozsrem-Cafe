@@ -7,7 +7,7 @@ public class Inventory {
         inventory_items = new HashMap<>();
         Add(new Item("Honey Glazed Chicken", 10));
         Add(new Item("Adobo", 10));
-        Add(new Item("Sweet and Spice", 10));
+        Add(new Item("Sweet and Spicy Fillet", 10));
         Add(new Item("Burger", 10));
         Add(new Item("Hotdog with Bun", 10));
         Add(new Item("Footlong", 10));
