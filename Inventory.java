@@ -1,6 +1,5 @@
 import java.util.HashMap;
 import java.util.Map;
-
 public class Inventory {
     private final Map<String, Item> inventory_items;
     Inventory() {
@@ -20,25 +19,26 @@ public class Inventory {
         Add(new Item("Hot Coffee", 10));
         Add(new Item("Iced Coffee", 10));
     }
-
     public void View() {
         System.out.println("INVENTORY");
         System.out.println("Qty:\t\tName: ");
-        inventory_items.forEach((name, item) -> {
-            System.out.println("\t" + String.format("%04d",item.getQuantity()) + "\t\t\t" +item.getItemName());
-        });
+        inventory_items.forEach((name, item) ->
+                System.out.println("\t" + String.format("%04d",item.getQuantity()) + "\t\t\t" +item.getItemName()));
     }
-
     public void Update_Order(Item item) {
         int quantity = inventory_items.get(item.getItemName()).getQuantity() - item.getQuantity();
         Item newItem = new Item(item.getItemName(), quantity);
         inventory_items.replace(item.getItemName(), newItem);
     }
-
+    public void Update_Stock(Item item) {
+        int quantity = inventory_items.get(item.getItemName()).getQuantity() + item.getQuantity();
+        Item newItem = new Item(item.getItemName(),quantity);
+        inventory_items.replace(item.getItemName(), newItem);
+        View();
+    }
     public Map<String, Item> getInventory_items() {
         return inventory_items;
     }
-
     private void Add(Item item) {
         inventory_items.put(item.getItemName(), item);
     }

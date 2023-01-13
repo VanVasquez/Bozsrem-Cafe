@@ -10,8 +10,8 @@ public class Main {
             int main_menu = app.Main_Menu();
             switch (main_menu) {
                 case 1 -> app.Order();
-                case 2 -> System.out.println("Inventory");
-                case 3 -> app.Sales_Report();
+                case 2 -> app.Inventory();
+                case 3 -> app.Report();
                 case 4 -> app.Close();
             }
         }
@@ -21,12 +21,14 @@ class Application extends Controls{
     private static final Scanner scn = new Scanner(System.in);
     private Order order;
     private Sales sales;
+    private Stocks stocks;
     private Inventory inventory;
     public boolean is_running;
     @Override
     public void Run() {
         inventory = new Inventory();
         sales = new Sales();
+        stocks = new Stocks();
         System.out.println("sys: App is Running...\n");
         is_running = true;
     }
@@ -70,16 +72,82 @@ class Application extends Controls{
             else if (next.toLowerCase().contains("change")) {
                 System.out.println("Add new order [yes / no]");
                 next = scn.nextLine();
-                if (next.toLowerCase().contains("no"))
-                    break;
+                if (next.toLowerCase().contains("no")) {
+                    order.Print();
+                    sales.Save_Report(order);
+                    return;
+                }
                 createOrder();
             }
         }
+        System.out.println("Add new order [yes / no]");
+        String next = scn.nextLine();
+        if (next.toLowerCase().contains("yes"))
+            createOrder();
         order.Print();
+        for (Item item: order.getItems()) {
+            inventory.Update_Order(item);
+        }
         sales.Save_Report(order);
     }
-    public void Sales_Report(){
+    public void Report() {
+        System.out.println("===========================================");
+        System.out.println(" Reports: ");
+        System.out.println(" [1] View end of the day sales.");
+        System.out.println(" [2] Inventory reports.");
+        System.out.println(" [0] Back to main menu.");
+        System.out.println("===========================================");
+        System.out.print(" Type here: ");
+        int choice = scn.nextInt();
+        switch (choice) {
+            case 0 -> {}
+            case 1 -> Sales_Report();
+            case 2 -> Stocks_Report();
+            default -> System.out.println(choice + " is not in choices");
+        }
+    }
+    public void Inventory() {
+        int a = 0;
+        while (true) {
+            inventory.View();
+            System.out.println("Select item name to update. (Type cancel to exit)");
+            System.out.print("Type name of item: ");
+            if (a == 0)
+                scn.nextLine();
+            a++;
+            String itemName = scn.nextLine();
+            itemName = itemName.trim();
+            if (itemName.toLowerCase().contains("cancel"))
+                return;
+            System.out.print("Enter stocks to add: ");
+            int itemQuantity = scn.nextInt();
+            Item item = new Item(nameFormatter(itemName), itemQuantity);
+            inventory.Update_Stock(item);
+            stocks.Save_Report(item);
+            System.out.println("Update another item: ");
+            scn.nextLine();
+            String next;
+            do {
+                System.out.print("type yes / no: ");
+                next = scn.nextLine();
+                if (next.toLowerCase().contains("no"))
+                    return;
+            } while (!next.toLowerCase().contains("yes"));
+        }
+    }
+    private void Sales_Report() {
+        if (sales.getOrders().isEmpty()) {
+            System.out.println("No orders have been made");
+            return;
+        }
         sales.View_Sales();
+    }
+    private void Stocks_Report() {
+        if (stocks.getStocks().isEmpty()) {
+            System.out.println("No update made");
+            return;
+        }
+        stocks.View_Stocks();
     }
     private void createOrder() {
         while (true) {

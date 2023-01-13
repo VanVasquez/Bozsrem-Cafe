@@ -8,14 +8,9 @@
 
 public class Item {
     private final String itemName;
-    private int quantity = 1;
+    private final int quantity;
     private final double itemPrice;
-
-    //"Polymorphism"
-    Item(String itemName) {
-        this.itemName = itemName;
-        this.itemPrice = getPrizes(itemName) * quantity;
-    }
+    //Constructor
     Item(String itemName, int quantity) {
         this.itemName = itemName;
         this.quantity = quantity;

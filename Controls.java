@@ -1,5 +1,8 @@
+/*
+    Description:
+        class Controls -> this is an abstract class.
+ */
 import java.util.Scanner;
-
 abstract class Controls {
     private static final Scanner scn = new Scanner(System.in);
     public abstract void Run();
@@ -27,5 +30,53 @@ abstract class Controls {
             case "C2" -> "Iced Coffee";
             default -> throw new IllegalStateException("Unexpected value: " + id);
         };
+    }
+    public String nameFormatter(String name) {
+        switch (name) {
+            case "honey glazed chicken" -> {
+                return  "Honey Glazed Chicken";
+            }
+            case "adobo" -> {
+                return "Adobo";
+            }
+            case "sweet and spicy fillet" ->
+            {
+                return "Sweet and Spicy Fillet";
+            }
+            case "burger" -> {
+                return "Burger";
+            }
+            case "hotdog with bun" -> {
+                return "Hotdog with Bun";
+            }
+            case "footlong" -> {
+                return "Footlong";
+            }
+            case "fries" -> {
+                return "Fries";
+            }
+            case "nachos" -> {
+                return "Nachos";
+            }
+            case "bottled water" -> {
+                return "Bottled Water";
+            }
+            case "coke" -> {
+                return "Coke";
+            }
+            case "coke zero" -> {
+                return "Coke Zero";
+            }
+            case "royal" -> {
+                return "Royal";
+            }
+            case "hot coffee" -> {
+                return "Hot Coffee";
+            }
+            case "iced coffee" -> {
+                return "Iced Coffee";
+            }
+            default -> throw new IllegalStateException( name + " is not in inventory");
+        }
     }
 }
