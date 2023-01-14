@@ -134,6 +134,7 @@ class Application extends Controls{
     }
     private void createOrder() {
         while (true) {
+            checkEmpty();
             System.out.println("Enter item id and quantity: ");
             String items = scn.nextLine();
             String itemName = " ";
@@ -152,7 +153,7 @@ class Application extends Controls{
                     System.out.print("Type here: ");
                     String next = scn.nextLine();
                     if (!next.toLowerCase().contains("change"))
-                        break; 
+                        break;
                 }
             } catch (StringIndexOutOfBoundsException e) {
                 System.out.println("Wrong input : " + itemName + "\n Expected: ((Item id) (item quantity))");
@@ -189,5 +190,14 @@ class Application extends Controls{
             return false;
         }
         return true;
+    }
+
+    private void checkEmpty() {
+        System.out.println("===========================================");
+        inventory.getInventory_items().forEach((name, item) -> {
+            if (item.getQuantity() == 0)
+                System.out.println("sys: " + item.getItemName() + " is out of stock.");
+        });
+        System.out.println("===========================================");
     }
 }
