@@ -1,5 +1,6 @@
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
 public class Inventory {
     private final Map<String, Item> inventory_items;
     Inventory() {
@@ -22,8 +23,14 @@ public class Inventory {
     public void View() {
         System.out.println("INVENTORY");
         System.out.println("Name:\t\tQty: ");
-        inventory_items.forEach((name, item) ->
-                System.out.println(String.format("%-24s", item.getItemName()) + " " + String.format("%04d",item.getQuantity())));
+        inventory_items.forEach((name, item) -> {
+            if (item.getQuantity() != 0)
+                System.out.println(String.format("%-24s", item.getItemName()) + " " + String.format("%04d", item.getQuantity()));
+        });
+        inventory_items.forEach((name, item) -> {
+            if (item.getQuantity() == 0)
+                System.out.println(String.format("%-24s", item.getItemName()) + " " + String.format("%04d", item.getQuantity()));
+        });
     }
     public void Update_Order(Item item) {
         int quantity = inventory_items.get(item.getItemName()).getQuantity() - item.getQuantity();
