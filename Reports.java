@@ -37,7 +37,7 @@ class Stocks extends Reports {
     public void View_Stocks() {
         for(Item item : stocks) {
             System.out.print("Qty: " + item.getQuantity());
-            System.out.println("Name: " + item.getItemName());
+            System.out.println(" Name: " + item.getItemName());
         }
     }
     public List<Item> getStocks() {

@@ -21,9 +21,9 @@ public class Inventory {
     }
     public void View() {
         System.out.println("INVENTORY");
-        System.out.println("Qty:\t\tName: ");
+        System.out.println("Name:\t\tQty: ");
         inventory_items.forEach((name, item) ->
-                System.out.println("\t" + String.format("%04d",item.getQuantity()) + "\t\t\t" +item.getItemName()));
+                System.out.println(String.format("%-24s", item.getItemName()) + " " + String.format("%04d",item.getQuantity())));
     }
     public void Update_Order(Item item) {
         int quantity = inventory_items.get(item.getItemName()).getQuantity() - item.getQuantity();
