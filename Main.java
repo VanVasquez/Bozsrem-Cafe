@@ -1,4 +1,4 @@
-import java.util.List;
+
 import java.util.Map;
 import java.util.Scanner;
 
@@ -21,6 +21,7 @@ class Application extends Controls{
     private static final Scanner scn = new Scanner(System.in);
     private Order order;
     private Sales sales;
+    private Item item;
     private Stocks stocks;
     private Inventory inventory;
     public boolean is_running;
@@ -61,33 +62,15 @@ class Application extends Controls{
         viewMenu();
         order = new Order(customer_name);
         scn.nextLine();
-        createOrder();
-        while (checkQuantity()) {
-            System.out.println("Change order / Cancel order");
-            System.out.println("Type cancel or change");
-            System.out.print("Type here: ");
-            String next = scn.nextLine();
-            if (next.toLowerCase().contains("cancel"))
-                return;
-            else if (next.toLowerCase().contains("change")) {
-                System.out.println("Add new order [yes / no]");
-                next = scn.nextLine();
-                if (next.toLowerCase().contains("no")) {
-                    order.Print();
-                    sales.Save_Report(order);
-                    return;
-                }
-                createOrder();
-            }
-        }
-        System.out.println("Add new order [yes / no]");
-        String next = scn.nextLine();
-        if (next.toLowerCase().contains("yes"))
+        while (true) {
             createOrder();
-        order.Print();
-        for (Item item: order.getItems()) {
-            inventory.Update_Order(item);
+            System.out.println("Add new order [yes / no]");
+            String next = scn.nextLine();
+            if (!next.toLowerCase().contains("yes")) break;
         }
+        if (order.getItems().isEmpty())
+            return;
+        order.Print();
         sales.Save_Report(order);
     }
     public void Report() {
@@ -121,7 +104,7 @@ class Application extends Controls{
                 return;
             System.out.print("Enter stocks to add: ");
             int itemQuantity = scn.nextInt();
-            Item item = new Item(nameFormatter(itemName), itemQuantity);
+            item = new Item(nameFormatter(itemName), itemQuantity);
             inventory.Update_Stock(item);
             stocks.Save_Report(item);
             System.out.println("Update another item: ");
@@ -151,15 +134,26 @@ class Application extends Controls{
     }
     private void createOrder() {
         while (true) {
-            System.out.println("Enter item id and quantity: (type close to end)");
+            System.out.println("Enter item id and quantity: ");
             String items = scn.nextLine();
-            if (items.contains("close"))
-                break;
-            String itemName = "";
+            String itemName = " ";
             try {
                 itemName = items.substring(0, 2).toUpperCase();
                 int quantity = Integer.parseInt(items.substring(3));
-                order.Add_Item(new Item(itemNames(itemName), quantity));
+                item = new Item(itemNames(itemName), quantity);
+                if (checkQuantity(item)) {
+                    order.Add_Item(item);
+                    inventory.Update_Order(item);
+                    return;
+                }
+                else {
+                    System.out.println("Change order / Cancel order");
+                    System.out.println("Type cancel or change");
+                    System.out.print("Type here: ");
+                    String next = scn.nextLine();
+                    if (!next.toLowerCase().contains("change"))
+                        break; 
+                }
             } catch (StringIndexOutOfBoundsException e) {
                 System.out.println("Wrong input : " + itemName + "\n Expected: ((Item id) (item quantity))");
             }
@@ -186,18 +180,14 @@ class Application extends Controls{
         System.out.println(" C1-      Hot Coffee                  P  20");
         System.out.println(" C2-      Iced Coffee                 P  30");
     }
-    private boolean checkQuantity() {
+    private boolean checkQuantity(Item item) {
         Map<String, Item> inventoryItems = inventory.getInventory_items();
-        List<Item> orderItems = order.getItems();
-        for (Item item: orderItems) {
-            Item current_inventory_item = inventoryItems.get(item.getItemName());
-            if (current_inventory_item.getQuantity() < item.getQuantity()) {
-                System.out.println("sys: Not enough " + current_inventory_item.getItemName() + ", \n" +
-                        current_inventory_item.getQuantity() + " " + current_inventory_item.getItemName() + " left.");
-                order.Remove_Item(item);
-                return true;
-            }
+        Item current_inventory_item = inventoryItems.get(item.getItemName());
+        if (current_inventory_item.getQuantity() < item.getQuantity()) {
+            System.out.println("sys: Not enough " + current_inventory_item.getItemName() + ", " +
+                    current_inventory_item.getQuantity() + " " + current_inventory_item.getItemName() + " left.");
+            return false;
         }
-        return false;
+        return true;
     }
 }

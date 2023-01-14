@@ -6,43 +6,49 @@
         items, is a List array that collects a list of (class)Item. it will save the data of items that the customer picked.
         total cost, is a double, it will be used to save the total amount of items saved in the data.
  */
-import java.util.ArrayList;
-import java.util.List;
+
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Order{
     private final String customerName;
-    private final List<Item> items;
+    private Map<String, Item> items;
     private double totalCost;
     //Constructor.
     Order(String customerName) {
         this.customerName = customerName;
-        this.items = new ArrayList<>();
+        this.items = new HashMap<>();
         this.totalCost = 0;
     }
     //This method will add the object item to List of items, then adds the price of its item and save it to totalCost.
     public void Add_Item(Item item) {
-        items.add(item);
+        if (items.containsKey(item.getItemName())) {
+            int newQuantity = items.get(item.getItemName()).getQuantity() + item.getQuantity();
+            items.replace(item.getItemName(), new Item(item.getItemName(), newQuantity));
+        } else {
+            items.put(item.getItemName(), item);
+        }
         totalCost += item.getItemPrice();
     }
-    //This method will return the list of items when called.
-    public List<Item> getItems() {
-        return items;
-    }
-    //This method will remove the item, and also subtracts the price of item to total cost
     public void Remove_Item(Item item) {
-        items.remove(item);
-        totalCost -= item.getItemPrice();
+        items.remove(item.getItemName(), item);
+    }
+    //This method will return the list of items when called.
+    public Map<String, Item> getItems() {
+        return items;
     }
     //This method will print all data about the object.
     public void Print() {
         System.out.println("===========================================");
         System.out.println("Name: " + customerName);
-        for (int i = 0; i < items.size(); i++) {
-            Item current_item = items.get(i);
-            System.out.println("Item #" + (i+1));
-            System.out.print("\t\t" + current_item.getQuantity());
-            System.out.print("\t" + String.format("%24s", current_item.getItemName()));
-            System.out.println("\t" + current_item.getItemPrice());
-        }
+        items.forEach((name, item) -> {
+            int i = 1;
+            System.out.println("Item #" + i);
+            System.out.print("\t\t" + item.getQuantity());
+            System.out.print("\t" + String.format("%24s", item.getItemName()));
+            System.out.println("\t" + item.getItemPrice());
+        });
         System.out.println("Total: " + totalCost);
         System.out.println("===========================================");
     }
