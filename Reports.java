@@ -16,9 +16,12 @@ class Sales extends Reports{
     @Override
     public void Save_Report(Item item) {}
     public void View_Sales() {
+        double earnings = 0;
         for(Order order : orders) {
             order.Print();
+            earnings += order.getTotalCost();
         }
+        System.out.println("Total Earnings: " + earnings);
     }
     public List<Order> getOrders() {
         return orders;

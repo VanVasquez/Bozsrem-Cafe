@@ -52,4 +52,8 @@ public class Order{
         System.out.println("Total: " + totalCost);
         System.out.println("===========================================");
     }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
 }

@@ -127,6 +127,7 @@ class Application extends Controls{
     }
     private void Stocks_Report() {
         inventory.View();
+        checkEmpty();
         if (stocks.getStocks().isEmpty()) {
             System.out.println("No update made");
             return;
